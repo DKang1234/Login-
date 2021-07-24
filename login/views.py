@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from login import forms
+from login.forms import UserForm, UserProfileInfoForm
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -27,10 +27,16 @@ def user_login(request):
                 return HttpResponse("Your account is not active")
         else: 
             print("Someone tried to login and failed")
+            print("They used username: {} and password: {}".format(username,password))
+            return HttpResponse("Invalid login details supplied.")
+
+    else:
+        return render(request, 'basics/login.html')
 
 
-def user_logout():
-    return
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('index'))
 
 def register(request):
 
@@ -53,5 +59,22 @@ def register(request):
 
             profile.user = user
 
-            if 'profile_pic' in re
-    return
+            if 'profile_pic' in request.FILES:
+                print('found it')
+                profile.profile_pic = request.Files['profile_pic']
+
+            profile.save()
+
+            registered = True
+        
+        else:
+            print(user_form.errors,profile_form.errors)
+
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileInfoForm()
+
+    return render(request, 'basics/registration.html', 
+                        {'user_form':user_form,
+                        'profile_form':profile_form, 
+                        'registered':registered})
