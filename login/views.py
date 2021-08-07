@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from login.forms import UserForm, UserProfileInfoForm
+from login.models import UserProfileInfo
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -47,7 +48,7 @@ def register(request):
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileInfoForm(data=request.POST)
 
-        if user_form.is_valid() and profile_form.is_vaild():
+        if user_form.is_valid() and profile_form.is_valid():
 
             user = user_form.save()
 
@@ -78,3 +79,13 @@ def register(request):
                         {'user_form':user_form,
                         'profile_form':profile_form, 
                         'registered':registered})
+
+def icon(request):
+
+    user = UserProfileInfo.objects.all().filter(id = "1")
+
+    context = {
+        "users": user
+    }
+
+    return render(request, 'basics/icon.html', context)
